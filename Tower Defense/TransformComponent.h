@@ -2,6 +2,7 @@
 
 #include "Component.h"
 
+#include <memory>
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -9,12 +10,22 @@ class TransformComponent :
 	public Component
 {
 public:
+	typedef std::unique_ptr<TransformComponent> Ptr;
+
 	TransformComponent();
-	~TransformComponent();
+	virtual ~TransformComponent();
+
+	virtual Type getType() const {
+		return Type::TRANSFORM;
+	}
 
 	void setTranslation(glm::vec3 const& dir) {
 		m_dirty = true;
 		m_position = dir;
+	}
+	void move(glm::vec3 const& dir) {
+		m_dirty = true;
+		m_position += dir;
 	}
 	void setRotation(glm::float32 angle) {
 		m_dirty = true;

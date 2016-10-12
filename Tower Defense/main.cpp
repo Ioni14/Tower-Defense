@@ -10,15 +10,16 @@
 #include <glm/glm.hpp>
 
 #include "Shader.h"
+#include "EntityManager.h"
 #include "TransformComponent.h"
+#include "VelocityComponent.h"
+#include "RenderSystem.h"
+#include "MovementSystem.h"
 
 /*
 TextureManager
 ShaderManager
 
-Entité : uint32
-EntityManager : std::map<Entity, std::vector<Component>> : une entité est un ensemble de Component
-Component : data
 SpriteComponent : shape + texture(opt)
 
 System : registerEntity() update()
@@ -49,11 +50,22 @@ int main(int argc, char *argv[])
 	basic.sendFloat("loopDuration", 5.0f);
 	basic.unuse();
 
-	TransformComponent transform;
-	transform.setTranslation(glm::vec3(1.0f, 0.5f, 0.0f));
-	transform.setRotation(45.0f);
-	transform.setScale(glm::vec2(1.2f, 1.2f));
-	glm::mat4 mat(transform.getMatrix());
+	EntityManager entityManager;
+
+	RenderSystem renderSystem(entityManager);
+	MovementSystem movementSystem(entityManager);
+
+	Entity entity = entityManager.createEntity();
+	auto transform = std::make_unique<TransformComponent>();
+	transform->setTranslation(glm::vec3(1.0f, 0.5f, 0.0f));
+	transform->setRotation(45.0f);
+	transform->setScale(glm::vec2(1.2f, 1.2f));
+	entityManager.addComponent(entity, std::move(transform));
+	auto velocity = std::make_unique<VelocityComponent>(glm::vec2(0.1f, 0.0f));
+	entityManager.addComponent(entity, std::move(velocity));
+
+	renderSystem.registerEntity(entity);
+	movementSystem.registerEntity(entity);
 
 	float vertexData[] = {
 		// vertices
@@ -132,6 +144,8 @@ int main(int argc, char *argv[])
 		}
 
 		// update
+		movementSystem.update(elapsed.asSeconds());
+		renderSystem.update(elapsed.asSeconds());
 
 		// effacement les tampons de couleur/profondeur
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
