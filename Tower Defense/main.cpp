@@ -89,7 +89,6 @@ int main(int argc, char *argv[])
 		0, 4, 1,
 	};
 
-
 	GLuint vboIndices(0);
 	glGenBuffers(1, &vboIndices);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboIndices);
@@ -105,6 +104,7 @@ int main(int argc, char *argv[])
 			glBindBuffer(GL_ARRAY_BUFFER, vboVertices); // bind : on veut utiliser ce buffer
 			
 				glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
+				//glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
 				glEnableVertexAttribArray(0); // on active le layout location 0
 				glEnableVertexAttribArray(1); // on active le layout location 1
