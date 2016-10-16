@@ -2,7 +2,7 @@
 
 #include <map>
 #include <GL/glew.h>
-#include <SFML/Graphics.hpp>
+#include <glm/common.hpp>
 
 class Shader
 {
@@ -19,8 +19,9 @@ public:
 	static void unuse();
 
 	bool sendFloat(std::string const& name, float value) const;
-	bool sendVector2f(std::string const& name, sf::Vector2f const& value) const;
-	bool sendVector3f(std::string const& name, sf::Vector3f const& value) const;
+	bool sendVector2f(std::string const& name, glm::vec2 const& value) const;
+	bool sendVector3f(std::string const& name, glm::vec3 const& value) const;
+	bool sendMatrix4x4(std::string const& name, glm::mat4x4 const& value) const;
 
 private:
 	static GLenum getShaderType(Type type);

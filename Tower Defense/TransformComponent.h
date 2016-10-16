@@ -2,7 +2,7 @@
 
 #include "Component.h"
 
-#include <memory>
+#include <iostream>
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 

@@ -4,6 +4,7 @@
 #include <string> 
 #include <fstream> 
 #include <sstream>
+#include "glm/gtc/type_ptr.hpp"
 
 Shader::Shader() :
 	m_program(0),
@@ -163,7 +164,7 @@ bool Shader::sendFloat(std::string const& name, float value) const
 	return true;
 }
 
-bool Shader::sendVector2f(std::string const& name, sf::Vector2f const& value) const
+bool Shader::sendVector2f(std::string const& name, glm::vec2 const& value) const
 {
 	if (m_program == 0) {
 		std::cerr << "No shader program created !" << std::endl;
@@ -178,7 +179,7 @@ bool Shader::sendVector2f(std::string const& name, sf::Vector2f const& value) co
 	return true;
 }
 
-bool Shader::sendVector3f(std::string const& name, sf::Vector3f const& value) const
+bool Shader::sendVector3f(std::string const& name, glm::vec3 const& value) const
 {
 	if (m_program == 0) {
 		std::cerr << "No shader program created !" << std::endl;
@@ -190,6 +191,21 @@ bool Shader::sendVector3f(std::string const& name, sf::Vector3f const& value) co
 		return false;
 	}
 	glUniform3f(location, value.x, value.y, value.z);
+	return true;
+}
+
+bool Shader::sendMatrix4x4(std::string const& name, glm::mat4x4 const& value) const
+{
+	if (m_program == 0) {
+		std::cerr << "No shader program created !" << std::endl;
+		return false;
+	}
+
+	GLint location = getUniformLocation(name);
+	if (location == -1) {
+		return false;
+	}
+	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 	return true;
 }
 

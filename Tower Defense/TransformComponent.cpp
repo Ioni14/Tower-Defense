@@ -1,7 +1,9 @@
 #include "TransformComponent.h"
 
+#include <iostream>
+
 TransformComponent::TransformComponent() :
-	m_dirty(false),
+	m_dirty(true),
 	m_position(0, 0, 0),
 	m_angle(0),
 	m_scale(1, 1),
