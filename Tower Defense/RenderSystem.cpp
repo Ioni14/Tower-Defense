@@ -4,8 +4,10 @@
 #include "TransformComponent.h"
 #include "SpriteComponent.h"
 
-RenderSystem::RenderSystem(EntityManager & entityManager) :
-	System(entityManager)
+RenderSystem::RenderSystem(EntityManager & entityManager, Camera& camera) :
+	System(entityManager),
+	m_camera(camera),
+	m_basicShader()
 {
 	m_basicShader.addFile("shaders/basic.vert", Shader::Type::VERTEX);
 	m_basicShader.addFile("shaders/basic.frag", Shader::Type::FRAGMENT);
@@ -19,8 +21,8 @@ RenderSystem::~RenderSystem()
 
 void RenderSystem::update(float elapsed)
 {
-	// camera (viewMatrix projectionMatrix)
-
+	glm::mat4 const& view = m_camera.getViewMatrix();
+	glm::mat4 const& projection = m_camera.getProjectionMatrix();
 
 	m_basicShader.use();
 
@@ -29,6 +31,8 @@ void RenderSystem::update(float elapsed)
 		SpriteComponent* sprite = dynamic_cast<SpriteComponent*>(m_entityManager.getComponent(entity, Component::Type::SPRITE));
 
 		m_basicShader.sendMatrix4x4("transform", transform->getMatrix());
+		m_basicShader.sendMatrix4x4("view", view);
+		m_basicShader.sendMatrix4x4("projection", projection);
 		sprite->draw();
 	}
 

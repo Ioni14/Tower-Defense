@@ -1,13 +1,11 @@
 #include "TransformComponent.h"
 
-#include <iostream>
-
 TransformComponent::TransformComponent() :
 	m_dirty(true),
 	m_position(0, 0, 0),
 	m_angle(0),
 	m_scale(1, 1),
-	m_matrix()
+	m_matrix(1.0f)
 {
 }
 

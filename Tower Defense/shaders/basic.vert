@@ -6,9 +6,12 @@ layout (location = 1) in vec4 color;
 smooth out vec4 theColor;
 
 uniform mat4 transform;
+uniform mat4 view;
+uniform mat4 projection;
 
 void main()
 {
     theColor = color;
-    gl_Position = transform * vec4(position, 1.0);
+	vec4 posEyeSpace = view * transform * vec4(position, 1.0);
+    gl_Position = projection * vec4(round(posEyeSpace.xyz), posEyeSpace.w);
 }
