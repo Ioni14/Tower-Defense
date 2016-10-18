@@ -25,6 +25,7 @@ void RenderSystem::update(float elapsed)
 	glm::mat4 const& projection = m_camera.getProjectionMatrix();
 
 	m_basicShader.use();
+	m_basicShader.sendTexture("tex", 0);
 
 	for (auto const& entity : m_entites) {
 		TransformComponent* transform = dynamic_cast<TransformComponent*>(m_entityManager.getComponent(entity, Component::Type::TRANSFORM));
@@ -33,7 +34,13 @@ void RenderSystem::update(float elapsed)
 		m_basicShader.sendMatrix4x4("transform", transform->getMatrix());
 		m_basicShader.sendMatrix4x4("view", view);
 		m_basicShader.sendMatrix4x4("projection", projection);
+
+		// TODO : optimisation si plusieurs entités utilisent la même texture (tri ?)
+		sprite->getTexture().use(); // texture0
+
 		sprite->draw();
+
+		sprite->getTexture().unuse();
 	}
 
 	m_basicShader.unuse();

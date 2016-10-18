@@ -18,10 +18,11 @@ public:
 	void use() const;
 	static void unuse();
 
-	bool sendFloat(std::string const& name, float value) const;
+	bool sendFloat(std::string const& name, GLfloat value) const;
 	bool sendVector2f(std::string const& name, glm::vec2 const& value) const;
 	bool sendVector3f(std::string const& name, glm::vec3 const& value) const;
 	bool sendMatrix4x4(std::string const& name, glm::mat4x4 const& value) const;
+	bool sendTexture(std::string const& name, GLint const& value) const;
 
 private:
 	static GLenum getShaderType(Type type);

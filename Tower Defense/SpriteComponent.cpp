@@ -4,21 +4,26 @@
 
 SpriteComponent::SpriteComponent(float side) :
 	m_vertices(),
+	m_texture(),
 	m_vao(0),
 	m_vboIndices(0),
 	m_vboVertices(0)
 {
 	m_vertices[0].position = glm::vec3(0, 0, 0);
-	m_vertices[0].color = glm::vec4(1, 0, 0, 1);
+	m_vertices[0].color = glm::vec3(1, 0, 0);
+	m_vertices[0].texCoords = glm::vec2(0, 1);
 
 	m_vertices[1].position = glm::vec3(0, -side, 0);
-	m_vertices[1].color = glm::vec4(0, 1, 0, 1);
+	m_vertices[1].color = glm::vec3(0, 1, 0);
+	m_vertices[1].texCoords = glm::vec2(0, 0);
 
 	m_vertices[2].position = glm::vec3(side, 0, 0);
-	m_vertices[2].color = glm::vec4(0, 0, 1, 1);
+	m_vertices[2].color = glm::vec3(0, 0, 1);
+	m_vertices[2].texCoords = glm::vec2(1, 1);
 
 	m_vertices[3].position = glm::vec3(side, -side, 0);
-	m_vertices[3].color = glm::vec4(1, 1, 1, 1);
+	m_vertices[3].color = glm::vec3(1, 1, 1);
+	m_vertices[3].texCoords = glm::vec2(1, 0);
 
 	unsigned short indicesData[] = {
 		0, 1, 2,
@@ -42,12 +47,12 @@ SpriteComponent::SpriteComponent(float side) :
 
 			glEnableVertexAttribArray(0); // on active le layout location 0 pour les positions
 			glEnableVertexAttribArray(1); // on active le layout location 1 pour les colors
-			//glEnableVertexAttribArray(2); // on active le layout location 2 pour les texCoords
+			glEnableVertexAttribArray(2); // on active le layout location 2 pour les texCoords
 
 			// 7 * sizeof(float) = il y a 7 floats en tout par vertex (3 pos float + 4 colors float)
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0); // positions = 3 floats par vector
-			glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(glm::vec3))); // colors = 4 floats par vector. après les 3 floats de position
-			//glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(7 * sizeof(GLfloat))); // texCoords = 2 floats par vector. après les 3 pos + 4 colors
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(3 * sizeof(GLfloat))); // colors = 3 floats par vector. après les 3 floats de position
+			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(6 * sizeof(GLfloat))); // texCoords = 2 floats par vector. après les 3 pos + 3 colors
 
 			//glDisableVertexAttribArray(2); // on désactive le layout location 2 (pas dans le vao)
 			//glDisableVertexAttribArray(1); // on désactive le layout location 1 (pas dans le vao)
@@ -65,6 +70,21 @@ SpriteComponent::~SpriteComponent()
 	glDeleteBuffers(1, &m_vboIndices);
 	glDeleteBuffers(1, &m_vboVertices);
 	glDeleteVertexArrays(1, &m_vao);
+}
+
+void SpriteComponent::setTexture(Texture const & texture)
+{
+	m_texture = texture;
+}
+
+Texture const & SpriteComponent::getTexture() const
+{
+	return m_texture;
+}
+
+bool SpriteComponent::hasTexture() const
+{
+	return m_texture.isCreated();
 }
 
 void SpriteComponent::draw(bool wireframe) const

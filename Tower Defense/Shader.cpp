@@ -148,7 +148,7 @@ void Shader::unuse()
 	glUseProgram(0);
 }
 
-bool Shader::sendFloat(std::string const& name, float value) const
+bool Shader::sendFloat(std::string const& name, GLfloat value) const
 {
 	if (m_program == 0) {
 		std::cerr << "No shader program created !" << std::endl;
@@ -206,6 +206,21 @@ bool Shader::sendMatrix4x4(std::string const& name, glm::mat4x4 const& value) co
 		return false;
 	}
 	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
+	return true;
+}
+
+bool Shader::sendTexture(std::string const & name, GLint const & value) const
+{
+	if (m_program == 0) {
+		std::cerr << "No shader program created !" << std::endl;
+		return false;
+	}
+
+	GLint location = getUniformLocation(name);
+	if (location == -1) {
+		return false;
+	}
+	glUniform1i(location, value);
 	return true;
 }
 

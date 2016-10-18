@@ -58,6 +58,7 @@ int main(int argc, char *argv[])
 	entityManager.addComponent(entity, std::move(velocity));
 	velocity = nullptr;
 	auto sprite = std::make_unique<SpriteComponent>(256.0f);
+	sprite->setTexture(Texture::createFromFile("textures/debug.png"));
 	entityManager.addComponent(entity, std::move(sprite));
 	sprite = nullptr;
 
