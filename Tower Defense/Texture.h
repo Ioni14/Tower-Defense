@@ -11,10 +11,12 @@ public:
 	~Texture();
 
 	bool isCreated() const;
-	void use() const;
-	static void unuse();
+	void use(GLint index = 0) const;
+	static void unuse(GLint index = 0);
 
 	static Texture createFromFile(std::string const & filepath);
+
+	void destroy();
 
 private:
 	GLuint m_id;

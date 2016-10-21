@@ -36,11 +36,11 @@ void RenderSystem::update(float elapsed)
 		m_basicShader.sendMatrix4x4("projection", projection);
 
 		// TODO : optimisation si plusieurs entités utilisent la même texture (tri ?)
-		sprite->getTexture().use(); // texture0
+		sprite->getTexture().use(0);
 
 		sprite->draw();
 
-		sprite->getTexture().unuse();
+		sprite->getTexture().unuse(0);
 	}
 
 	m_basicShader.unuse();

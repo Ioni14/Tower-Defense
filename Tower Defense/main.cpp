@@ -11,6 +11,7 @@
 
 #include "Shader.h"
 #include "EntityManager.h"
+#include "StageManager.h"
 #include "TransformComponent.h"
 #include "VelocityComponent.h"
 #include "SpriteComponent.h"
@@ -42,6 +43,9 @@ int main(int argc, char *argv[])
 
 	Camera camera(1280, 720);
 
+	StageManager stageManager;
+	stageManager.create("maps/map1.td");
+
 	EntityManager entityManager;
 
 	RenderSystem renderSystem(entityManager, camera);
@@ -49,7 +53,7 @@ int main(int argc, char *argv[])
 
 	Entity entity = entityManager.createEntity();
 	auto transform = std::make_unique<TransformComponent>();
-	transform->setTranslation(glm::vec3(0, 256, 0.0f));
+	transform->setTranslation(glm::vec3(0, 720.0f, 0.0f));
 	transform->setRotation(0);
 	transform->setScale(glm::vec2(1, 1));
 	entityManager.addComponent(entity, std::move(transform));
@@ -57,7 +61,7 @@ int main(int argc, char *argv[])
 	auto velocity = std::make_unique<VelocityComponent>(glm::vec2(0, 0), glm::vec2(150.0f, 70.0f));
 	entityManager.addComponent(entity, std::move(velocity));
 	velocity = nullptr;
-	auto sprite = std::make_unique<SpriteComponent>(256.0f);
+	auto sprite = std::make_unique<SpriteComponent>(64.0f, 64.0f);
 	sprite->setTexture(Texture::createFromFile("textures/debug.png"));
 	entityManager.addComponent(entity, std::move(sprite));
 	sprite = nullptr;
@@ -98,5 +102,6 @@ int main(int argc, char *argv[])
 		window.display();
 	}
 
+	//system("pause");
 	return EXIT_SUCCESS;
 }

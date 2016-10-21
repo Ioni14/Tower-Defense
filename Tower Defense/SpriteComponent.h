@@ -20,7 +20,8 @@ class SpriteComponent :
 public:
 	typedef std::unique_ptr<SpriteComponent> Ptr;
 
-	explicit SpriteComponent(float side);
+	explicit SpriteComponent(glm::vec2 const& size);
+	explicit SpriteComponent(GLfloat width, GLfloat height);
 	virtual ~SpriteComponent();
 
 	virtual Type getType() const {
@@ -39,4 +40,6 @@ private:
 	GLuint m_vao;
 	GLuint m_vboIndices;
 	GLuint m_vboVertices;
+
+	glm::vec2 m_size;
 };

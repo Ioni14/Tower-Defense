@@ -51,6 +51,12 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="StageManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TransformComponent.h">
@@ -89,12 +95,21 @@
     <ClInclude Include="Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="StageManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\basic.frag">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="shaders\basic.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="maps\map1.td">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
