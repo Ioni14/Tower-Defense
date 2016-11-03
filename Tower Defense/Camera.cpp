@@ -2,7 +2,7 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-Camera::Camera(glm::float32 width, glm::float32 height) :
+Camera::Camera(GLfloat width, GLfloat height) :
 	m_dirtyViewMatrix(true),
 	m_dirtyProjectionMatrix(true),
 	m_width(width),

@@ -3,11 +3,12 @@
 #include <sstream>
 #include <fstream>
 #include <iostream>
+#include "TextureManager.h"
 
-StageManager::StageManager()
+StageManager::StageManager(TextureManager& textureManager) :
+	m_textureManager(textureManager)
 {
 }
-
 
 StageManager::~StageManager()
 {
@@ -54,7 +55,7 @@ Stage StageManager::create(std::string const& filepath)
 				}
 				continue;
 			}
-			if (items[0] == "height") {
+			else if (items[0] == "height") {
 				try {
 					stage.m_size.y = std::stoi(items[1]);
 				}
@@ -64,25 +65,43 @@ Stage StageManager::create(std::string const& filepath)
 				}
 				continue;
 			}
-			if (items[0] == "tileset") {
-				stage.m_tileset = Texture::createFromFile(items[1]);
+			else if (items[0] == "tileset") {
+				stage.m_tileset = m_textureManager.getTexture(items[1]);
 				continue;
 			}
-			if (items[0] == "spawn_x") {
+			else if (items[0] == "spawn_x") {
 				try {
-					stage.m_spawn.x = std::stoi(items[1]);
+					stage.m_spawn.x = std::stof(items[1]);
 				}
 				catch (std::invalid_argument e) {
-					std::cerr << "<spawn_x> must be an integer" << std::endl;
+					std::cerr << "<spawn_x> must be a float" << std::endl;
 					return stage;
 				}
 			}
-			if (items[0] == "spawn_y") {
+			else if (items[0] == "spawn_y") {
 				try {
-					stage.m_spawn.y = std::stoi(items[1]);
+					stage.m_spawn.y = std::stof(items[1]);
 				}
 				catch (std::invalid_argument e) {
-					std::cerr << "<spawn_y> must be an integer" << std::endl;
+					std::cerr << "<spawn_y> must be a float" << std::endl;
+					return stage;
+				}
+			}
+			else if (items[0] == "finish_x") {
+				try {
+					stage.m_finish.x = std::stof(items[1]);
+				}
+				catch (std::invalid_argument e) {
+					std::cerr << "<finish_x> must be a float" << std::endl;
+					return stage;
+				}
+			}
+			else if (items[0] == "finish_y") {
+				try {
+					stage.m_finish.y = std::stof(items[1]);
+				}
+				catch (std::invalid_argument e) {
+					std::cerr << "<finish_y> must be a float" << std::endl;
 					return stage;
 				}
 			}
@@ -94,27 +113,57 @@ Stage StageManager::create(std::string const& filepath)
 			std::stringstream ss;
 			ss.str(line);
 			std::string item;
-			while (std::getline(ss, item, '/')) {
+			while (std::getline(ss, item, ' ')) {
 				items.push_back(item);
 			}
 		}
 
 		// tiles
-		if (!items.empty() && items.size() == 6 && items[0] == "t") {
-			// tile/x/y/texX/texY/isBuildable
-			
-			// position haut gauche
-			items[1]; // x
-			items[2]; // y 
+		if (!items.empty() && items.size() == 8 && items[0] == "t") {
+			// t <x> <y> <width> <height> <texCoord X> <texCoord Y> <isBuildable>
 
-			// texCoords
-			items[3]; // texX
-			items[4]; // texY
+			GLfloat x(0);
+			GLfloat y(0);
+			GLuint width(0);
+			GLuint height(0);
+			GLfloat texX(0);
+			GLfloat texY(0);
+			GLboolean isBuildable(false);
+			try {
+				x = std::stof(items[1]);
+				y = std::stof(items[2]);
+				width = std::stoi(items[3]);
+				height = std::stoi(items[4]);
+				texX = std::stof(items[5]);
+				texY = std::stof(items[6]);
+				isBuildable = items[7] != "0";
+			}
+			catch (std::invalid_argument e) {
+				std::cerr << "A parameter has not the correct format. line : " << line << std::endl;
+				return stage;
+			}
 
-			// plus tard.......
-			items[5]; // isBuildable
-			
+			Tile tile(glm::vec2(width, height), glm::vec2(x, y), glm::vec2(texX, texY), stage.m_tileset);
+			stage.m_tiles.push_back(std::move(tile));
+
 			continue;
+		}
+
+		// checkpoints
+		if (!items.empty() && items.size() == 3 && items[0] == "cp") {
+			GLfloat x(0);
+			GLfloat y(0);
+
+			try {
+				x = std::stof(items[1]);
+				y = std::stof(items[2]);
+			}
+			catch (std::invalid_argument e) {
+				std::cerr << "A parameter has not the correct format. line : " << line << std::endl;
+				return stage;
+			}
+
+			stage.m_checkpoints.push_back(glm::vec2(x, y));
 		}
 		
 	}

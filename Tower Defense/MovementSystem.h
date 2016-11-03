@@ -12,4 +12,3 @@ public:
 	virtual void update(float elapsed);
 	virtual bool isGranted(Entity const& entity) const;
 };
-

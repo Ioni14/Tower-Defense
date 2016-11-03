@@ -6,8 +6,11 @@
 class StageManager
 {
 public:
-	StageManager();
+	explicit StageManager(TextureManager& textureManager);
 	~StageManager();
 
 	Stage create(std::string const& filepath);
+
+private:
+	TextureManager& m_textureManager;
 };

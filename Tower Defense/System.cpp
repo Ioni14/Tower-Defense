@@ -2,7 +2,7 @@
 
 System::System(EntityManager & entityManager) :
 	m_entityManager(entityManager),
-	m_entites()
+	m_entities()
 {
 }
 
@@ -16,20 +16,23 @@ void System::registerEntity(Entity entity)
 		return;
 	}
 	// checks duplicate
-	for (auto const& e : m_entites) {
+	for (auto const& e : m_entities) {
 		if (e == entity) {
 			return;
 		}
 	}
-	m_entites.push_back(entity);
+	m_entities.push_back(entity);
 }
 
 void System::unregisterEntity(Entity entity)
 {
-	for (auto& it = m_entites.begin(); it != m_entites.end(); it++) {
+	for (auto& it = m_entities.begin(); it != m_entities.end();) {
 		if (*it == entity) {
-			m_entites.erase(it);
+			it = m_entities.erase(it);
 			return;
+		}
+		else {
+			++it;
 		}
 	}
 }

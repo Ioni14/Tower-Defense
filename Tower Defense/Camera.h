@@ -2,11 +2,12 @@
 
 #include <glm/common.hpp>
 #include <glm/mat4x4.hpp>
+#include <GL/glew.h>
 
 class Camera
 {
 public:
-	explicit Camera(glm::float32 width, glm::float32 height);
+	explicit Camera(GLfloat width, GLfloat height);
 	~Camera();
 
 	void setTranslation(glm::vec3 const& dir) {
@@ -17,7 +18,7 @@ public:
 		m_dirtyViewMatrix = true;
 		m_position += -dir;
 	}
-	void setRotation(glm::float32 angle) {
+	void setRotation(GLfloat angle) {
 		m_dirtyViewMatrix = true;
 		m_angle = -angle;
 	}
@@ -29,24 +30,24 @@ public:
 	glm::mat4 const& getViewMatrix();
 	glm::mat4 const& getProjectionMatrix();
 
-	void setWidth(glm::uint32 width) {
+	void setWidth(GLfloat width) {
 		m_dirtyProjectionMatrix = true;
-		m_width = static_cast<glm::float32>(width);
+		m_width = width;
 	}
-	void setHeight(glm::uint32 height) {
+	void setHeight(GLfloat height) {
 		m_dirtyProjectionMatrix = true;
-		m_height = static_cast<glm::float32>(height);
+		m_height = height;
 	}
 
 private:
 	bool m_dirtyViewMatrix; /**< true if the matrix need to be recalculated */
 	bool m_dirtyProjectionMatrix;
 
-	glm::float32 m_width;
-	glm::float32 m_height;
+	GLfloat m_width;
+	GLfloat m_height;
 
 	glm::vec3 m_position; /**< position in the world */
-	glm::float32 m_angle; /**< angle in degrees for rotation */
+	GLfloat m_angle; /**< angle in degrees for rotation */
 	glm::vec2 m_scale; /**< scale for size change */
 	glm::mat4 m_view; /**< represents the camera transformation (translation, rotation, scaling) */
 

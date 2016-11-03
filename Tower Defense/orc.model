@@ -1,0 +1,26 @@
+# Orc
+
+spritesheet=. orc.png
+
+# states : s <id state> <name>
+s 1 down
+s 2 left
+s 3 up
+s 4 right
+
+# states animation : sa <id state> <texCoord X px> <texCoord Y px> <width px> <height px> <duration seconds>
+sa 1 0 0 64 64 0.5
+sa 1 64 0 64 64 0.5
+sa 1 128 0 64 64 0.5
+
+sa 2 0 64 64 64 0.5
+sa 2 64 64 64 64 0.5
+sa 2 128 64 64 64 0.5
+
+sa 3 0 128 64 64 0.5
+sa 3 64 128 64 64 0.5
+sa 3 128 128 64 64 0.5
+
+sa 4 0 192 64 64 0.5
+sa 4 64 192 64 64 0.5
+sa 4 128 192 64 64 0.5

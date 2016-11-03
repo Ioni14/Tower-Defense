@@ -20,18 +20,20 @@ class SpriteComponent :
 public:
 	typedef std::unique_ptr<SpriteComponent> Ptr;
 
-	explicit SpriteComponent(glm::vec2 const& size);
-	explicit SpriteComponent(GLfloat width, GLfloat height);
+	explicit SpriteComponent(glm::vec2 const& size, glm::vec2 const& texCoords, Texture const& texture);
 	virtual ~SpriteComponent();
 
 	virtual Type getType() const {
 		return Type::SPRITE;
 	}
 
+	virtual void destroy();
+
 	void setTexture(Texture const& texture);
 	Texture const& getTexture() const;
 	bool hasTexture() const;
 	void draw(bool wireframe = false) const;
+
 
 private:
 	std::array<Vertex, 4> m_vertices;
@@ -41,5 +43,5 @@ private:
 	GLuint m_vboIndices;
 	GLuint m_vboVertices;
 
-	glm::vec2 m_size;
+	glm::vec2 m_size; /**< size of the shape (frequently 1:1 texels)*/
 };

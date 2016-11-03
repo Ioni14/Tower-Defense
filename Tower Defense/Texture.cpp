@@ -51,6 +51,8 @@ Texture Texture::createFromFile(std::string const & filepath)
 		return texture;
 	}
 
+	std::cout << "Create texture : " << filepath << std::endl;
+
 	texture.m_width = image.getSize().x;
 	texture.m_height = image.getSize().y;
 
@@ -73,6 +75,7 @@ Texture Texture::createFromFile(std::string const & filepath)
 void Texture::destroy()
 {
 	if (m_id != 0) {
+		std::cout << "Delete texture" << std::endl;
 		glDeleteTextures(1, &m_id);
 		m_id = 0;
 	}

@@ -42,6 +42,16 @@ public:
 		return nullptr;
 	}
 
+	void clean() {
+		for (auto& it = m_entities.begin(); it != m_entities.end();) {
+			for (auto& compoIt = it->second.begin(); compoIt != it->second.end();) {
+				(*compoIt)->destroy();
+				compoIt = it->second.erase(compoIt);
+			}
+			it = m_entities.erase(it);
+		}
+	}
+
 private:
 	std::map<Entity, ComponentVector> m_entities;
 	Entity m_nextEntity;

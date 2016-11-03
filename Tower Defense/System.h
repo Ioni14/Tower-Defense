@@ -18,5 +18,5 @@ public:
 
 protected:
 	EntityManager& m_entityManager;
-	std::vector<Entity> m_entites;
+	std::vector<Entity> m_entities;
 };

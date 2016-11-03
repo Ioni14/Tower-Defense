@@ -2,29 +2,31 @@
 
 #include <iostream>
 
-SpriteComponent::SpriteComponent(glm::vec2 const& size) :
+SpriteComponent::SpriteComponent(glm::vec2 const& size, glm::vec2 const& texCoords, Texture const& texture) :
 	m_vertices(),
-	m_texture(),
+	m_texture(texture),
 	m_vao(0),
 	m_vboIndices(0),
 	m_vboVertices(0),
 	m_size(size)
 {
+	glm::vec2 texSize(glm::vec2(texture.getWidth(), texture.getHeight()));
+
 	m_vertices[0].position = glm::vec3(0, 0, 0);
-	m_vertices[0].color = glm::vec3(1, 0, 0);
-	m_vertices[0].texCoords = glm::vec2(0, 0);
+	m_vertices[0].color = glm::vec3(1, 1, 1);
+	m_vertices[0].texCoords = glm::vec2(texCoords.s, texCoords.t) / texSize;
 
 	m_vertices[1].position = glm::vec3(0, -m_size.y, 0);
-	m_vertices[1].color = glm::vec3(0, 1, 0);
-	m_vertices[1].texCoords = glm::vec2(0, 1);
+	m_vertices[1].color = glm::vec3(1, 1, 1);
+	m_vertices[1].texCoords = glm::vec2(texCoords.s, texCoords.t + m_size.y) / texSize;
 
 	m_vertices[2].position = glm::vec3(m_size.x, 0, 0);
-	m_vertices[2].color = glm::vec3(0, 0, 1);
-	m_vertices[2].texCoords = glm::vec2(1, 0);
+	m_vertices[2].color = glm::vec3(1, 1, 1);
+	m_vertices[2].texCoords = glm::vec2(texCoords.s + m_size.x, texCoords.t) / texSize;
 
 	m_vertices[3].position = glm::vec3(m_size.x, -m_size.y, 0);
 	m_vertices[3].color = glm::vec3(1, 1, 1);
-	m_vertices[3].texCoords = glm::vec2(1, 1);
+	m_vertices[3].texCoords = glm::vec2(texCoords.s + m_size.x, texCoords.t + m_size.y) / texSize;
 
 	unsigned short indicesData[] = {
 		0, 1, 2,
@@ -62,14 +64,12 @@ SpriteComponent::SpriteComponent(glm::vec2 const& size) :
 	glBindVertexArray(0);
 }
 
-SpriteComponent::SpriteComponent(GLfloat width, GLfloat height) :
-	SpriteComponent(glm::vec2(width, height))
+SpriteComponent::~SpriteComponent()
 {
 }
 
-SpriteComponent::~SpriteComponent()
+void SpriteComponent::destroy()
 {
-	m_texture.destroy();
 	glDeleteBuffers(1, &m_vboIndices);
 	glDeleteBuffers(1, &m_vboVertices);
 	glDeleteVertexArrays(1, &m_vao);

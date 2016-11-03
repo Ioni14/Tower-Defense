@@ -1,6 +1,5 @@
 #include "MovementSystem.h"
 
-#include <iostream>
 #include "TransformComponent.h"
 #include "VelocityComponent.h"
 
@@ -15,7 +14,7 @@ MovementSystem::~MovementSystem()
 
 void MovementSystem::update(float elapsed)
 {
-	for (auto const& entity : m_entites) {
+	for (auto const& entity : m_entities) {
 		TransformComponent* transform = dynamic_cast<TransformComponent*>(m_entityManager.getComponent(entity, Component::Type::TRANSFORM));
 		VelocityComponent* velocity = dynamic_cast<VelocityComponent*>(m_entityManager.getComponent(entity, Component::Type::VELOCITY));
 
