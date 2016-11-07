@@ -53,6 +53,8 @@ int main(int argc, char *argv[])
 	StageManager stageManager(textureManager);
 	Stage stage1 = stageManager.create("maps/map1.td");
 
+	// optimisation tilemap avoir un seul VAO ?
+
 	EntityManager entityManager;
 
 	RenderSystem renderSystem(entityManager, stage1, camera);
@@ -68,7 +70,7 @@ int main(int argc, char *argv[])
 		entityManager.addComponent(entity, std::move(transform));
 	}
 	{
-		auto velocity = std::make_unique<VelocityComponent>(glm::vec2(0, 0), 50.0f);
+		auto velocity = std::make_unique<VelocityComponent>(glm::vec2(0, 0), 100.0f);
 		entityManager.addComponent(entity, std::move(velocity));
 	}
 	{
