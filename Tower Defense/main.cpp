@@ -17,17 +17,11 @@
 #include "VelocityComponent.h"
 #include "SpriteComponent.h"
 #include "PathComponent.h"
+#include "CaracComponent.h"
 #include "RenderSystem.h"
 #include "MovementSystem.h"
 #include "AIFollowPathSystem.h"
 #include "Camera.h"
-
-/*
-TextureManager
-ShaderManager
-
-SpriteComponent : shape + texture(opt)
-*/
 
 int main(int argc, char *argv[])
 {
@@ -40,14 +34,14 @@ int main(int argc, char *argv[])
 	settings.antialiasingLevel = 0;
 	settings.majorVersion = 3;
 	settings.minorVersion = 3;
-	sf::Window window(sf::VideoMode(width, height), "OpenGL", sf::Style::Default, settings);
+	sf::Window window(sf::VideoMode(width, height), "Tower Defense", sf::Style::Default, settings);
 
 	if (glewInit() != GLEW_OK) {
 		std::cerr << "Glew init error!" << std::endl;
 		return EXIT_FAILURE;
 	}
 
-	Camera camera(width, height);
+	Camera camera(static_cast<GLfloat>(width), static_cast<GLfloat>(height));
 
 	TextureManager textureManager;
 	StageManager stageManager(textureManager);
@@ -64,9 +58,6 @@ int main(int argc, char *argv[])
 	Entity entity = entityManager.createEntity();
 	{
 		auto transform = std::make_unique<TransformComponent>();
-		transform->setTranslation(glm::vec3(0.0f, 0.0f, 0.0f));
-		transform->setRotation(0);
-		transform->setScale(glm::vec2(1, 1));
 		entityManager.addComponent(entity, std::move(transform));
 	}
 	{
@@ -81,6 +72,10 @@ int main(int argc, char *argv[])
 		auto path = std::make_unique<PathComponent>();
 		entityManager.addComponent(entity, std::move(path));
 	}
+	{
+		auto carac = std::make_unique<CaracComponent>(100, 0.0f, 0.0f, 0.0f);
+		entityManager.addComponent(entity, std::move(carac));
+	}
 
 	renderSystem.registerEntity(entity);
 	movementSystem.registerEntity(entity);
@@ -89,7 +84,7 @@ int main(int argc, char *argv[])
 	sf::Clock clock;
 	const float FPS(1000.0f / 60.0f);
 
-	bool running = true;
+	auto running(true);
 	while (running)
 	{
 		sf::Event event;
@@ -105,7 +100,7 @@ int main(int argc, char *argv[])
 		}
 
 		// update semi-fixed timestep
-		float elapsed = clock.restart().asSeconds();
+		auto elapsed = clock.restart().asSeconds();
 		while (elapsed > 0.0f)
 		{
 			float deltaTime = glm::min(elapsed, FPS);

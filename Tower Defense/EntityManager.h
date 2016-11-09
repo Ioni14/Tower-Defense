@@ -21,7 +21,7 @@ public:
 		m_entities[entity] = ComponentVector();
 		return entity;
 	}
-	void addComponent(Entity const& entity, std::unique_ptr<Component> component) {
+	void addComponent(Entity const& entity, std::unique_ptr<Component>&& component) {
 		// TODO : checks if has already this type of component
 		m_entities[entity].push_back(std::move(component));
 	}

@@ -1,10 +1,15 @@
 #include "TransformComponent.h"
 
 TransformComponent::TransformComponent() :
+	TransformComponent(glm::vec3(0.0f, 0.0f, 0.0f))
+{
+}
+
+TransformComponent::TransformComponent(glm::vec3 const & pos, GLfloat angle, glm::vec2 const & scale) :
 	m_dirty(true),
-	m_position(0, 0, 0),
-	m_angle(0),
-	m_scale(1, 1),
+	m_position(pos),
+	m_angle(angle),
+	m_scale(scale),
 	m_matrix(1.0f)
 {
 }

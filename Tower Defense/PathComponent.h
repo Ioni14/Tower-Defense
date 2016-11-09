@@ -19,7 +19,7 @@ public:
 		return Type::PATH;
 	}
 
-	int getIndexNextCheckpoint() const {
+	auto getIndexNextCheckpoint() const {
 		return m_indexNextCheckpoint;
 	}
 	void setIndexNextCheckpoint(int index) {
@@ -29,7 +29,7 @@ public:
 		m_indexNextCheckpoint++;
 	}
 
-	bool hasSpawned() const {
+	auto hasSpawned() const {
 		return m_spawned;
 	}
 
@@ -46,5 +46,5 @@ public:
 
 private:
 	bool m_spawned; /**< true if entity has spawned*/
-	int m_indexNextCheckpoint; /**< the n-th checkpoint where entity must go*/
+	size_t m_indexNextCheckpoint; /**< the n-th checkpoint where entity must go*/
 };

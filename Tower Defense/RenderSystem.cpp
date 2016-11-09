@@ -43,8 +43,8 @@ void RenderSystem::update(float elapsed)
 
 	auto& tiles = m_stage.getTiles();
 	for (auto& tile : tiles) {
-		TransformComponent& transform = tile.getTransform();
-		SpriteComponent& sprite = tile.getSprite();
+		auto& transform = tile.getTransform();
+		auto& sprite = tile.getSprite();
 
 		m_tilemapShader.sendMatrix4x4("model_view", view * transform.getMatrix());
 
@@ -59,8 +59,8 @@ void RenderSystem::update(float elapsed)
 	m_basicShader.sendMatrix4x4("projection", projection);
 
 	for (auto const& entity : m_entities) {
-		TransformComponent* transform = dynamic_cast<TransformComponent*>(m_entityManager.getComponent(entity, Component::Type::TRANSFORM));
-		SpriteComponent* sprite = dynamic_cast<SpriteComponent*>(m_entityManager.getComponent(entity, Component::Type::SPRITE));
+		auto transform = dynamic_cast<TransformComponent*>(m_entityManager.getComponent(entity, Component::Type::TRANSFORM));
+		auto sprite = dynamic_cast<SpriteComponent*>(m_entityManager.getComponent(entity, Component::Type::SPRITE));
 
 		m_basicShader.sendMatrix4x4("transform", transform->getMatrix());
 
@@ -75,7 +75,7 @@ void RenderSystem::update(float elapsed)
 
 bool RenderSystem::isGranted(Entity const & entity) const
 {
-	int cc(0);
+	auto cc(0);
 	auto& compos = m_entityManager.getComponents(entity);
 	for (auto const& compo : compos) {
 		switch (compo->getType()) {

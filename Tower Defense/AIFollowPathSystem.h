@@ -9,7 +9,7 @@ class AIFollowPathSystem :
 	public System
 {
 public:
-	explicit AIFollowPathSystem(EntityManager& entityManager, Stage const& stage);
+	AIFollowPathSystem(EntityManager& entityManager, Stage const& stage);
 	virtual ~AIFollowPathSystem();
 
 	virtual void update(float elapsed);

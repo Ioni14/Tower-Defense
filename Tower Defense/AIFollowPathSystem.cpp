@@ -14,28 +14,12 @@ AIFollowPathSystem::~AIFollowPathSystem()
 {
 }
 
-// TODO : refonte (p'tit problème de trajectoire...)
 void AIFollowPathSystem::update(float elapsed)
 {
 	for (auto const& entity : m_entities) {
-		TransformComponent* transform = dynamic_cast<TransformComponent*>(m_entityManager.getComponent(entity, Component::Type::TRANSFORM));
-		VelocityComponent* velocity = dynamic_cast<VelocityComponent*>(m_entityManager.getComponent(entity, Component::Type::VELOCITY));
-		PathComponent* path = dynamic_cast<PathComponent*>(m_entityManager.getComponent(entity, Component::Type::PATH));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		auto transform = dynamic_cast<TransformComponent*>(m_entityManager.getComponent(entity, Component::Type::TRANSFORM));
+		auto velocity = dynamic_cast<VelocityComponent*>(m_entityManager.getComponent(entity, Component::Type::VELOCITY));
+		auto path = dynamic_cast<PathComponent*>(m_entityManager.getComponent(entity, Component::Type::PATH));
 
 		// If entity has not spawned [TODO : when the time has come (create/activate the entity when the time has come)] : we spawn it on the spawn position
 		if (!path->hasSpawned()) {
@@ -44,7 +28,7 @@ void AIFollowPathSystem::update(float elapsed)
 		}
 
 		// Calculate the entity direction (toward of the next checkpoint)
-		int indexNextCheckpoint = path->getIndexNextCheckpoint();
+		auto indexNextCheckpoint = path->getIndexNextCheckpoint();
 		glm::vec2 nextCP;
 		if (indexNextCheckpoint < m_stage.getCheckpoints().size()) {
 			nextCP = m_stage.getCheckpoints()[indexNextCheckpoint];
@@ -60,12 +44,12 @@ void AIFollowPathSystem::update(float elapsed)
 		glm::vec2 vel = posToCP * velocity->getSpeed() * elapsed;
 
 		// Compute the remaining distance
-		float distancePosToCP = glm::distance(nextCP, glm::vec2(transform->getPosition())); // the distance between entity and CP
+		auto distancePosToCP = glm::distance(nextCP, glm::vec2(transform->getPosition())); // the distance between entity and CP
 
-		float distanceRemaining = glm::length(vel); // the one-frame distance travelled by entity toward the CP
-		float distanceActualToNext = distancePosToCP; // the distance between checkpoints
+		auto distanceRemaining = glm::length(vel); // the one-frame distance travelled by entity toward the CP
+		auto distanceActualToNext = distancePosToCP; // the distance between checkpoints
 
-		bool pathFinished(false);
+		auto pathFinished(false);
 		glm::vec2 posActualCP = transform->getPosition();
 		while (distanceRemaining > distanceActualToNext) {
 			distanceRemaining -= distanceActualToNext;
@@ -105,7 +89,7 @@ void AIFollowPathSystem::update(float elapsed)
 
 bool AIFollowPathSystem::isGranted(Entity const & entity) const
 {
-	int cc(0);
+	auto cc(0);
 	auto& compos = m_entityManager.getComponents(entity);
 	for (auto const& compo : compos) {
 		switch (compo->getType()) {

@@ -14,6 +14,7 @@ public:
 	typedef std::unique_ptr<TransformComponent> Ptr;
 
 	TransformComponent();
+	explicit TransformComponent(glm::vec3 const& pos, GLfloat angle = 0.0f, glm::vec2 const& scale = glm::vec2(1.0f, 1.0f));
 	virtual ~TransformComponent();
 
 	virtual Type getType() const {
@@ -23,9 +24,9 @@ public:
 	glm::vec3 const& getPosition() const {
 		return m_position;
 	}
-	void setTranslation(glm::vec3 const& dir) {
+	void setTranslation(glm::vec3 const& pos) {
 		m_dirty = true;
-		m_position = dir;
+		m_position = pos;
 	}
 	void move(glm::vec3 const& dir) {
 		m_dirty = true;

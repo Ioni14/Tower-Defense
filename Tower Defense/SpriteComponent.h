@@ -20,7 +20,7 @@ class SpriteComponent :
 public:
 	typedef std::unique_ptr<SpriteComponent> Ptr;
 
-	explicit SpriteComponent(glm::vec2 const& size, glm::vec2 const& texCoords, Texture const& texture);
+	SpriteComponent(glm::vec2 const& size, glm::vec2 const& texCoords, Texture const& texture);
 	virtual ~SpriteComponent();
 
 	virtual Type getType() const {
@@ -33,7 +33,6 @@ public:
 	Texture const& getTexture() const;
 	bool hasTexture() const;
 	void draw(bool wireframe = false) const;
-
 
 private:
 	std::array<Vertex, 4> m_vertices;
