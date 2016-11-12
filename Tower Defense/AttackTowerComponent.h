@@ -42,8 +42,11 @@ public:
 	}
 
 	void stepCooldown(float elapsed) {
-		if (canAttack()) {
+		if (!canAttack()) {
 			m_cooldown -= sf::seconds(elapsed);
+			if (m_cooldown < sf::Time::Zero) {
+				m_cooldown = sf::Time::Zero;
+			}
 		}
 	}
 
@@ -52,7 +55,7 @@ public:
 	}
 
 	bool canAttack() const {
-		return m_cooldown > sf::Time::Zero;
+		return m_cooldown <= sf::Time::Zero;
 	}
 
 private:

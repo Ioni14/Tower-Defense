@@ -28,6 +28,20 @@ glm::mat4 const & Camera::getProjectionMatrix()
 	return m_projection;
 }
 
+glm::vec2 Camera::screenToWorld(glm::vec2 const & position)
+{
+	// http://stackoverflow.com/questions/7692988/opengl-math-projecting-screen-space-to-world-space-coords
+
+	auto projViewInverse = glm::inverse(getProjectionMatrix() * getViewMatrix());
+
+	auto posNDC = glm::vec4(2.0f * position.x / m_width - 1.0f, 1.0f - 2.0f * position.y / m_height, 0.0f, 1.0f);
+
+	auto posWorld = projViewInverse * posNDC;
+	posWorld /= posWorld.w;
+
+	return glm::vec2(posWorld);
+}
+
 glm::mat4 const & Camera::getViewMatrix()
 {
 	if (m_dirtyViewMatrix) {

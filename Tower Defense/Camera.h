@@ -39,6 +39,8 @@ public:
 		m_height = height;
 	}
 
+	glm::vec2 screenToWorld(glm::vec2 const& position);
+
 private:
 	bool m_dirtyViewMatrix; /**< true if the matrix need to be recalculated */
 	bool m_dirtyProjectionMatrix;

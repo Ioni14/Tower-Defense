@@ -5,7 +5,7 @@
 class Component
 {
 public:
-	enum class Type { TRANSFORM, VELOCITY, SPRITE, PATH, ATTACK_TOWER, CARAC };
+	enum class Type { TRANSFORM, VELOCITY, SPRITE, PATH, ATTACK_TOWER, CARAC, CREEP };
 
 	Component();
 	virtual ~Component();

@@ -4,9 +4,11 @@
 #include "TransformComponent.h"
 #include "AttackTowerComponent.h"
 #include "CaracComponent.h"
+#include "CreepComponent.h"
 
 AITowerSystem::AITowerSystem(EntityManager & entityManager) :
-	System(entityManager)
+	System(entityManager),
+	m_creeps()
 {
 }
 
@@ -20,7 +22,7 @@ void AITowerSystem::update(float elapsed)
 		auto transform = dynamic_cast<TransformComponent*>(m_entityManager.getComponent(entity, Component::Type::TRANSFORM));
 		auto attackTower = dynamic_cast<AttackTowerComponent*>(m_entityManager.getComponent(entity, Component::Type::ATTACK_TOWER));
 
-		if (attackTower->canAttack()) {
+		if (!attackTower->canAttack()) {
 			// in cooldown => cannot attack
 			attackTower->stepCooldown(elapsed);
 			continue;
@@ -64,11 +66,12 @@ void AITowerSystem::update(float elapsed)
 
 			auto distanceMin(0.0f);
 			Entity const* entityMin(nullptr);
-			for (auto const& entityTarget : m_entities) {
-				auto transformTarget = dynamic_cast<TransformComponent*>(m_entityManager.getComponent(entityTarget, Component::Type::TRANSFORM));
-				auto caracTarget = dynamic_cast<CaracComponent*>(m_entityManager.getComponent(entityTarget, Component::Type::CARAC));
+			for (auto const& entityTarget : m_creeps) {
+				const auto transformTarget = dynamic_cast<TransformComponent*>(m_entityManager.getComponent(entityTarget, Component::Type::TRANSFORM));
+				const auto caracTarget = dynamic_cast<CaracComponent*>(m_entityManager.getComponent(entityTarget, Component::Type::CARAC));
+				const auto creepTarget = dynamic_cast<CreepComponent*>(m_entityManager.getComponent(entityTarget, Component::Type::CREEP));
 
-				if (transformTarget == nullptr || caracTarget == nullptr) {
+				if (creepTarget == nullptr || transformTarget == nullptr || caracTarget == nullptr) {
 					// not attackable
 					continue;
 				}
@@ -107,11 +110,11 @@ void AITowerSystem::update(float elapsed)
 		auto caracFocus = dynamic_cast<CaracComponent*>(m_entityManager.getComponent(*attackTower->getTarget(), Component::Type::CARAC));
 		caracFocus->dropHealth(attackTower->getDamage());
 
-		std::cout << "la tour #" << entity << " fait " << attackTower->getDamage() << " dégâts." << std::endl;
-		std::cout << "l'entité #" << *attackTower->getTarget() << " n'a plus que " << caracFocus->getHealth() << " PV." << std::endl;
+		std::cout << "la tour #" << entity << " fait " << attackTower->getDamage() << " degats." << std::endl;
+		std::cout << "l'entite #" << *attackTower->getTarget() << " n'a plus que " << caracFocus->getHealth() << " PV." << std::endl;
 
 		if (caracFocus->isDead()) {
-			std::cout << "l'entité #" << *attackTower->getTarget() << " est morte." << std::endl;
+			std::cout << "l'entite #" << *attackTower->getTarget() << " est morte." << std::endl;
 			attackTower->setTarget(nullptr);
 		}
 
@@ -147,5 +150,5 @@ bool AITowerSystem::isGranted(Entity const & entity) const
 			cc++;
 		}
 	}
-	return cc == 3;
+	return cc == 2;
 }

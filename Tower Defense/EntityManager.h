@@ -16,7 +16,7 @@ public:
 	EntityManager();
 	~EntityManager();
 
-	Entity createEntity() {
+	auto createEntity() {
 		Entity entity(m_nextEntity++);
 		m_entities[entity] = ComponentVector();
 		return entity;

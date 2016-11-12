@@ -18,10 +18,14 @@
 #include "SpriteComponent.h"
 #include "PathComponent.h"
 #include "CaracComponent.h"
+#include "AttackTowerComponent.h"
+#include "CreepComponent.h"
 #include "RenderSystem.h"
 #include "MovementSystem.h"
 #include "AIFollowPathSystem.h"
+#include "AITowerSystem.h"
 #include "Camera.h"
+#include "main.h"
 
 int main(int argc, char *argv[])
 {
@@ -54,35 +58,65 @@ int main(int argc, char *argv[])
 	RenderSystem renderSystem(entityManager, stage1, camera);
 	MovementSystem movementSystem(entityManager);
 	AIFollowPathSystem aiFollowPathSystem(entityManager, stage1);
+	AITowerSystem aiTowerSystem(entityManager);
 
-	Entity entity = entityManager.createEntity();
+	// Creep
+	Entity entityCreep = entityManager.createEntity();
 	{
 		auto transform = std::make_unique<TransformComponent>();
-		entityManager.addComponent(entity, std::move(transform));
+		entityManager.addComponent(entityCreep, std::move(transform));
 	}
 	{
 		auto velocity = std::make_unique<VelocityComponent>(glm::vec2(0, 0), 100.0f);
-		entityManager.addComponent(entity, std::move(velocity));
+		entityManager.addComponent(entityCreep, std::move(velocity));
 	}
 	{
 		auto sprite = std::make_unique<SpriteComponent>(glm::vec2(40, 40), glm::vec2(0, 0), textureManager.getTexture("textures/debug.png"));
-		entityManager.addComponent(entity, std::move(sprite));
+		entityManager.addComponent(entityCreep, std::move(sprite));
 	}
 	{
 		auto path = std::make_unique<PathComponent>();
-		entityManager.addComponent(entity, std::move(path));
+		entityManager.addComponent(entityCreep, std::move(path));
 	}
 	{
 		auto carac = std::make_unique<CaracComponent>(100, 0.0f, 0.0f, 0.0f);
-		entityManager.addComponent(entity, std::move(carac));
+		entityManager.addComponent(entityCreep, std::move(carac));
 	}
+	{
+		auto creep = std::make_unique<CreepComponent>();
+		entityManager.addComponent(entityCreep, std::move(creep));
+	}
+	renderSystem.registerEntity(entityCreep);
+	movementSystem.registerEntity(entityCreep);
+	aiFollowPathSystem.registerEntity(entityCreep);
 
-	renderSystem.registerEntity(entity);
-	movementSystem.registerEntity(entity);
-	aiFollowPathSystem.registerEntity(entity);
+	// Tower
+	{
+		Entity entity = entityManager.createEntity();
+		{
+			auto transform = std::make_unique<TransformComponent>(glm::vec3(120.0f, 600.0f, 0.0f));
+			entityManager.addComponent(entity, std::move(transform));
+		}
+		{
+			auto sprite = std::make_unique<SpriteComponent>(glm::vec2(40, 40), glm::vec2(0, 0), textureManager.getTexture("textures/debug.png"));
+			entityManager.addComponent(entity, std::move(sprite));
+		}
+		{
+			auto carac = std::make_unique<CaracComponent>(0, 0.0f, 20.0f, 10.0f);
+			entityManager.addComponent(entity, std::move(carac));
+		}
+		{
+			auto attackTower = std::make_unique<AttackTowerComponent>(sf::seconds(1.0f), 10, 100.0f);
+			entityManager.addComponent(entity, std::move(attackTower));
+		}
+		renderSystem.registerEntity(entity);
+		aiTowerSystem.registerEntity(entity);
+		aiTowerSystem.addCreep(entityCreep);
+	}
+	
 
 	sf::Clock clock;
-	const float FPS(1000.0f / 60.0f);
+	const float FPS(1.0f / 60.0f);
 
 	auto running(true);
 	while (running)
@@ -91,11 +125,27 @@ int main(int argc, char *argv[])
 		while (window.pollEvent(event)) {
 			if (event.type == sf::Event::Closed) {
 				running = false;
-			} else if (event.type == sf::Event::Resized) {
+			}
+			else if (event.type == sf::Event::Resized) {
 				// on ajuste le viewport lorsque la fenêtre est redimensionnée
 				glViewport(0, 0, event.size.width, event.size.height);
 				camera.setWidth((GLfloat)event.size.width);
 				camera.setHeight((GLfloat)event.size.height);
+			}
+			else if (event.type == sf::Event::LostFocus) {
+			}
+			else if (event.type == sf::Event::GainedFocus) {
+			}
+			else if (event.type == sf::Event::KeyReleased) {
+				if (event.key.code == sf::Keyboard::Escape) {
+					running = false;
+				}
+			}
+			else if (event.type == sf::Event::MouseButtonPressed) {
+				if (event.mouseButton.button == sf::Mouse::Button::Left) {
+					auto mouseInWorld = camera.screenToWorld(glm::vec2(event.mouseButton.x, event.mouseButton.y));
+					std::cout << "mouse : " << mouseInWorld.x << "; " << mouseInWorld.y << std::endl;
+				}
 			}
 		}
 
@@ -104,9 +154,13 @@ int main(int argc, char *argv[])
 		while (elapsed > 0.0f)
 		{
 			float deltaTime = glm::min(elapsed, FPS);
-			//camera.move(glm::vec3(0.0f, 0.2f, 0.0f) * elapsed);
+			//camera.move(glm::vec3(0.0f, 3.0f, 0.0f) * elapsed);
+
+			// system updates
 			aiFollowPathSystem.update(deltaTime);
 			movementSystem.update(deltaTime);
+			aiTowerSystem.update(deltaTime);
+
 			elapsed -= deltaTime;
 		}
 

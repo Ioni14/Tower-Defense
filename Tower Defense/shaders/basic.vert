@@ -17,5 +17,6 @@ void main()
 	passTexCoords = texCoords;
 
 	vec4 posEyeSpace = view * transform * vec4(position, 1.0);
-    gl_Position = projection * vec4(round(posEyeSpace.xyz), posEyeSpace.w);
+    //gl_Position = projection * vec4(round(posEyeSpace.xyz), posEyeSpace.w);
+	gl_Position = projection * posEyeSpace;
 }
