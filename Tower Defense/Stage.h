@@ -35,6 +35,11 @@ public:
 	std::vector<glm::vec2> const& getCheckpoints() const {
 		return m_checkpoints;
 	}
+	
+	/**
+	 * search by any position
+	 */
+	Tile const * searchTileByPosition(glm::vec2 const & position);
 
 private:
 	glm::uvec2 m_size; /**< width x height number of tiles*/

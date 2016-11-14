@@ -11,10 +11,10 @@ class TransformComponent :
 	public Component
 {
 public:
-	typedef std::unique_ptr<TransformComponent> Ptr;
+	using Ptr = std::unique_ptr<TransformComponent>;
 
 	TransformComponent();
-	explicit TransformComponent(glm::vec3 const& pos, GLfloat angle = 0.0f, glm::vec2 const& scale = glm::vec2(1.0f, 1.0f));
+	TransformComponent(glm::vec3 pos, GLfloat angle = 0.0f, glm::vec2 scale = glm::vec2(1.0f, 1.0f));
 	virtual ~TransformComponent();
 
 	virtual Type getType() const {

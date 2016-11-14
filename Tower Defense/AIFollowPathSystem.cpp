@@ -17,9 +17,14 @@ AIFollowPathSystem::~AIFollowPathSystem()
 void AIFollowPathSystem::update(float elapsed)
 {
 	for (auto const& entity : m_entities) {
+		auto transform = m_entityManager.getTransformComponent(entity);
+		auto velocity = m_entityManager.getVelocityComponent(entity);
+		auto path = m_entityManager.getPathComponent(entity);
+		/*
 		auto transform = dynamic_cast<TransformComponent*>(m_entityManager.getComponent(entity, Component::Type::TRANSFORM));
 		auto velocity = dynamic_cast<VelocityComponent*>(m_entityManager.getComponent(entity, Component::Type::VELOCITY));
 		auto path = dynamic_cast<PathComponent*>(m_entityManager.getComponent(entity, Component::Type::PATH));
+		*/
 
 		// If entity has not spawned [TODO : when the time has come (create/activate the entity when the time has come)] : we spawn it on the spawn position
 		if (!path->hasSpawned()) {
@@ -89,6 +94,13 @@ void AIFollowPathSystem::update(float elapsed)
 
 bool AIFollowPathSystem::isGranted(Entity const & entity) const
 {
+	auto transform = m_entityManager.getTransformComponent(entity);
+	auto velocity = m_entityManager.getVelocityComponent(entity);
+	auto path = m_entityManager.getPathComponent(entity);
+	
+	return transform != nullptr && velocity != nullptr && path != nullptr;
+
+	/*
 	auto cc(0);
 	auto& compos = m_entityManager.getComponents(entity);
 	for (auto const& compo : compos) {
@@ -100,4 +112,5 @@ bool AIFollowPathSystem::isGranted(Entity const & entity) const
 		}
 	}
 	return cc == 3;
+	*/
 }

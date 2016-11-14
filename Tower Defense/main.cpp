@@ -64,27 +64,33 @@ int main(int argc, char *argv[])
 	Entity entityCreep = entityManager.createEntity();
 	{
 		auto transform = std::make_unique<TransformComponent>();
-		entityManager.addComponent(entityCreep, std::move(transform));
+		//entityManager.addComponent(entityCreep, std::move(transform));
+		entityManager.addTransformComponent(entityCreep, std::move(transform));
 	}
 	{
-		auto velocity = std::make_unique<VelocityComponent>(glm::vec2(0, 0), 100.0f);
-		entityManager.addComponent(entityCreep, std::move(velocity));
+		auto velocity = std::make_unique<VelocityComponent>(glm::vec2(0, 0), 30.0f);
+		//entityManager.addComponent(entityCreep, std::move(velocity));
+		entityManager.addVelocityComponent(entityCreep, std::move(velocity));
 	}
 	{
 		auto sprite = std::make_unique<SpriteComponent>(glm::vec2(40, 40), glm::vec2(0, 0), textureManager.getTexture("textures/debug.png"));
-		entityManager.addComponent(entityCreep, std::move(sprite));
+		//entityManager.addComponent(entityCreep, std::move(sprite));
+		entityManager.addSpriteComponent(entityCreep, std::move(sprite));
 	}
 	{
 		auto path = std::make_unique<PathComponent>();
-		entityManager.addComponent(entityCreep, std::move(path));
+		//entityManager.addComponent(entityCreep, std::move(path));
+		entityManager.addPathComponent(entityCreep, std::move(path));
 	}
 	{
 		auto carac = std::make_unique<CaracComponent>(100, 0.0f, 0.0f, 0.0f);
-		entityManager.addComponent(entityCreep, std::move(carac));
+		//entityManager.addComponent(entityCreep, std::move(carac));
+		entityManager.addCaracComponent(entityCreep, std::move(carac));
 	}
 	{
 		auto creep = std::make_unique<CreepComponent>();
-		entityManager.addComponent(entityCreep, std::move(creep));
+		//entityManager.addComponent(entityCreep, std::move(creep));
+		entityManager.addCreepComponent(entityCreep, std::move(creep));
 	}
 	renderSystem.registerEntity(entityCreep);
 	movementSystem.registerEntity(entityCreep);
@@ -95,19 +101,23 @@ int main(int argc, char *argv[])
 		Entity entity = entityManager.createEntity();
 		{
 			auto transform = std::make_unique<TransformComponent>(glm::vec3(120.0f, 600.0f, 0.0f));
-			entityManager.addComponent(entity, std::move(transform));
+			//entityManager.addComponent(entity, std::move(transform));
+			entityManager.addTransformComponent(entity, std::move(transform));
 		}
 		{
 			auto sprite = std::make_unique<SpriteComponent>(glm::vec2(40, 40), glm::vec2(0, 0), textureManager.getTexture("textures/debug.png"));
-			entityManager.addComponent(entity, std::move(sprite));
+			//entityManager.addComponent(entity, std::move(sprite));
+			entityManager.addSpriteComponent(entity, std::move(sprite));
 		}
 		{
 			auto carac = std::make_unique<CaracComponent>(0, 0.0f, 20.0f, 10.0f);
-			entityManager.addComponent(entity, std::move(carac));
+			//entityManager.addComponent(entity, std::move(carac));
+			entityManager.addCaracComponent(entity, std::move(carac));
 		}
 		{
 			auto attackTower = std::make_unique<AttackTowerComponent>(sf::seconds(1.0f), 10, 100.0f);
-			entityManager.addComponent(entity, std::move(attackTower));
+			//entityManager.addComponent(entity, std::move(attackTower));
+			entityManager.addAttackTowerComponent(entity, std::move(attackTower));
 		}
 		renderSystem.registerEntity(entity);
 		aiTowerSystem.registerEntity(entity);
@@ -144,7 +154,45 @@ int main(int argc, char *argv[])
 			else if (event.type == sf::Event::MouseButtonPressed) {
 				if (event.mouseButton.button == sf::Mouse::Button::Left) {
 					auto mouseInWorld = camera.screenToWorld(glm::vec2(event.mouseButton.x, event.mouseButton.y));
-					std::cout << "mouse : " << mouseInWorld.x << "; " << mouseInWorld.y << std::endl;
+					std::cout << "[Mouse Left Click] : " << mouseInWorld.x << "; " << mouseInWorld.y << std::endl;
+
+					// recherche du tile sous le click
+					// récupère la position du tile
+					// => ce sera la position de la tour
+
+					auto tile = stage1.searchTileByPosition(mouseInWorld);
+					if (tile == nullptr) {
+						std::cout << "Tile pos : null" << std::endl;
+					}
+					else {
+						std::cout << "Tile pos : " << tile->getTransform().getPosition().x << "; " << tile->getTransform().getPosition().y << std::endl;
+
+						// TODO : Optimisation !!! chute FPS quand on met trop de tours
+						Entity entity = entityManager.createEntity();
+						{
+							auto transform = std::make_unique<TransformComponent>(tile->getTransform().getPosition());
+							//entityManager.addComponent(entity, std::move(transform));
+							entityManager.addTransformComponent(entity, std::move(transform));
+						}
+						{
+							auto sprite = std::make_unique<SpriteComponent>(glm::vec2(40, 40), glm::vec2(0, 0), textureManager.getTexture("textures/debug.png"));
+							//entityManager.addComponent(entity, std::move(sprite));
+							entityManager.addSpriteComponent(entity, std::move(sprite));
+						}
+						{
+							auto carac = std::make_unique<CaracComponent>(0, 0.0f, 20.0f, 10.0f);
+							//entityManager.addComponent(entity, std::move(carac));
+							entityManager.addCaracComponent(entity, std::move(carac));
+						}
+						{
+							auto attackTower = std::make_unique<AttackTowerComponent>(sf::seconds(1.0f), 10, 100.0f);
+							//entityManager.addComponent(entity, std::move(attackTower));
+							entityManager.addAttackTowerComponent(entity, std::move(attackTower));
+						}
+						renderSystem.registerEntity(entity);
+						aiTowerSystem.registerEntity(entity);
+						aiTowerSystem.addCreep(entityCreep);
+					}
 				}
 			}
 		}
@@ -154,7 +202,6 @@ int main(int argc, char *argv[])
 		while (elapsed > 0.0f)
 		{
 			float deltaTime = glm::min(elapsed, FPS);
-			//camera.move(glm::vec3(0.0f, 3.0f, 0.0f) * elapsed);
 
 			// system updates
 			aiFollowPathSystem.update(deltaTime);

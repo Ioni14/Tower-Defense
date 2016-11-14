@@ -2,4 +2,4 @@
 
 #include <glm/common.hpp>
 
-typedef glm::uint32 Entity;
+using Entity = glm::uint32;

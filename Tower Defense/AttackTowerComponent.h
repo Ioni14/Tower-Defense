@@ -10,6 +10,8 @@ class AttackTowerComponent :
 	public Component
 {
 public:
+	using Ptr = std::unique_ptr<AttackTowerComponent>;
+
 	AttackTowerComponent(sf::Time const& cooldown, GLuint damage, GLfloat range);
 	virtual ~AttackTowerComponent();
 

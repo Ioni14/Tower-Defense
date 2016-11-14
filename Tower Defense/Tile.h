@@ -7,7 +7,7 @@
 class Tile
 {
 public:
-	explicit Tile(glm::vec2 const& size, glm::vec2 const& position, glm::vec2 const& texCoords, Texture const& texture);
+	Tile(glm::vec2 const& size, glm::vec2 const& position, glm::vec2 const& texCoords, Texture const& texture);
 	virtual ~Tile();
 
 	SpriteComponent& getSprite() {
@@ -15,6 +15,10 @@ public:
 	}
 
 	TransformComponent& getTransform() {
+		return m_transform;
+	}
+
+	TransformComponent const& getTransform() const {
 		return m_transform;
 	}
 

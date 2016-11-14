@@ -5,7 +5,7 @@ TransformComponent::TransformComponent() :
 {
 }
 
-TransformComponent::TransformComponent(glm::vec3 const & pos, GLfloat angle, glm::vec2 const & scale) :
+TransformComponent::TransformComponent(glm::vec3 pos, GLfloat angle, glm::vec2 scale) :
 	m_dirty(true),
 	m_position(pos),
 	m_angle(angle),

@@ -7,6 +7,8 @@ class CaracComponent :
 	public Component
 {
 public:
+	using Ptr = std::unique_ptr<CaracComponent>;
+
 	CaracComponent(GLuint health, GLfloat defense, GLfloat critical, GLfloat haste);
 	virtual ~CaracComponent();
 

@@ -6,6 +6,8 @@ class CreepComponent :
 	public Component
 {
 public:
+	using Ptr = std::unique_ptr<CreepComponent>;
+
 	CreepComponent();
 	virtual ~CreepComponent();
 

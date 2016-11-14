@@ -18,7 +18,7 @@ class SpriteComponent :
 	public Component
 {
 public:
-	typedef std::unique_ptr<SpriteComponent> Ptr;
+	using Ptr = std::unique_ptr<SpriteComponent>;
 
 	SpriteComponent(glm::vec2 const& size, glm::vec2 const& texCoords, Texture const& texture);
 	virtual ~SpriteComponent();
@@ -33,6 +33,10 @@ public:
 	Texture const& getTexture() const;
 	bool hasTexture() const;
 	void draw(bool wireframe = false) const;
+
+	auto const& getSize() const {
+		return m_size;
+	}
 
 private:
 	std::array<Vertex, 4> m_vertices;

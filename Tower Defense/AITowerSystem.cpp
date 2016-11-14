@@ -19,8 +19,10 @@ AITowerSystem::~AITowerSystem()
 void AITowerSystem::update(float elapsed)
 {
 	for (auto const& entity : m_entities) {
-		auto transform = dynamic_cast<TransformComponent*>(m_entityManager.getComponent(entity, Component::Type::TRANSFORM));
-		auto attackTower = dynamic_cast<AttackTowerComponent*>(m_entityManager.getComponent(entity, Component::Type::ATTACK_TOWER));
+		auto transform = m_entityManager.getTransformComponent(entity);
+		auto attackTower = m_entityManager.getAttackTowerComponent(entity);
+		//auto transform = dynamic_cast<TransformComponent*>(m_entityManager.getComponent(entity, Component::Type::TRANSFORM));
+		//auto attackTower = dynamic_cast<AttackTowerComponent*>(m_entityManager.getComponent(entity, Component::Type::ATTACK_TOWER));
 
 		if (!attackTower->canAttack()) {
 			// in cooldown => cannot attack
@@ -33,8 +35,10 @@ void AITowerSystem::update(float elapsed)
 			// checks if target still in range
 			auto target = *attackTower->getTarget();
 
-			auto transformFocus = dynamic_cast<TransformComponent*>(m_entityManager.getComponent(target, Component::Type::TRANSFORM));
-			auto caracFocus = dynamic_cast<CaracComponent*>(m_entityManager.getComponent(target, Component::Type::CARAC));
+			auto transformFocus = m_entityManager.getTransformComponent(target);
+			auto caracFocus = m_entityManager.getCaracComponent(target);
+			//auto transformFocus = dynamic_cast<TransformComponent*>(m_entityManager.getComponent(target, Component::Type::TRANSFORM));
+			//auto caracFocus = dynamic_cast<CaracComponent*>(m_entityManager.getComponent(target, Component::Type::CARAC));
 
 			if (transformFocus == nullptr || caracFocus == nullptr) {
 				// maybe focus does not exist anymore
@@ -67,9 +71,13 @@ void AITowerSystem::update(float elapsed)
 			auto distanceMin(0.0f);
 			Entity const* entityMin(nullptr);
 			for (auto const& entityTarget : m_creeps) {
-				const auto transformTarget = dynamic_cast<TransformComponent*>(m_entityManager.getComponent(entityTarget, Component::Type::TRANSFORM));
-				const auto caracTarget = dynamic_cast<CaracComponent*>(m_entityManager.getComponent(entityTarget, Component::Type::CARAC));
-				const auto creepTarget = dynamic_cast<CreepComponent*>(m_entityManager.getComponent(entityTarget, Component::Type::CREEP));
+
+				auto const* const transformTarget = m_entityManager.getTransformComponent(entityTarget);
+				auto const* const caracTarget = m_entityManager.getCaracComponent(entityTarget);
+				auto const* const creepTarget = m_entityManager.getCreepComponent(entityTarget);
+				//const auto transformTarget = dynamic_cast<TransformComponent*>(m_entityManager.getComponent(entityTarget, Component::Type::TRANSFORM));
+				//const auto caracTarget = dynamic_cast<CaracComponent*>(m_entityManager.getComponent(entityTarget, Component::Type::CARAC));
+				//const auto creepTarget = dynamic_cast<CreepComponent*>(m_entityManager.getComponent(entityTarget, Component::Type::CREEP));
 
 				if (creepTarget == nullptr || transformTarget == nullptr || caracTarget == nullptr) {
 					// not attackable
@@ -106,8 +114,9 @@ void AITowerSystem::update(float elapsed)
 
 		// finally attack the target
 		attackTower->resetCooldown();
-		
-		auto caracFocus = dynamic_cast<CaracComponent*>(m_entityManager.getComponent(*attackTower->getTarget(), Component::Type::CARAC));
+
+		auto caracFocus = m_entityManager.getCaracComponent(*attackTower->getTarget());
+		//auto caracFocus = dynamic_cast<CaracComponent*>(m_entityManager.getComponent(*attackTower->getTarget(), Component::Type::CARAC));
 		caracFocus->dropHealth(attackTower->getDamage());
 
 		std::cout << "la tour #" << entity << " fait " << attackTower->getDamage() << " degats." << std::endl;
@@ -141,6 +150,12 @@ void AITowerSystem::update(float elapsed)
 
 bool AITowerSystem::isGranted(Entity const & entity) const
 {
+	auto attackTower = m_entityManager.getAttackTowerComponent(entity);
+	auto transform = m_entityManager.getTransformComponent(entity);
+
+	return transform != nullptr && attackTower != nullptr;
+	
+	/*
 	auto cc(0);
 	auto& compos = m_entityManager.getComponents(entity);
 	for (auto const& compo : compos) {
@@ -151,4 +166,5 @@ bool AITowerSystem::isGranted(Entity const & entity) const
 		}
 	}
 	return cc == 2;
+	*/
 }
